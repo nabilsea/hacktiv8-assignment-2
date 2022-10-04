@@ -10,6 +10,7 @@ type OrderRepository interface {
 	FindById(id int) (*model.Order, error)
 	Save(order *model.Order) (*model.Order, error)
 	Update(order *model.Order) (*model.Order, error)
+	Delete(order *model.Order) (*model.Order, error)
 }
 
 type orderRepository struct {
@@ -59,6 +60,15 @@ func (r *orderRepository) Save(order *model.Order) (*model.Order, error) {
 
 func (r *orderRepository) Update(order *model.Order) (*model.Order, error) {
 	err := r.db.Save(&order).Error
+	if err != nil {
+		return order, err
+	}
+
+	return order, nil
+}
+
+func (r *orderRepository) Delete(order *model.Order) (*model.Order, error) {
+	err := r.db.Delete(&order).Error
 	if err != nil {
 		return order, err
 	}
