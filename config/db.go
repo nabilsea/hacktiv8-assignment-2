@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/nabilsea/hacktiv8-assignment-2.git/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -32,7 +33,7 @@ func init() {
 		log.Fatal(err)
 	}
 
-	err = db.AutoMigrate()
+	err = db.AutoMigrate(&model.Order{}, &model.Item{})
 	if err != nil {
 		log.Fatal(err)
 	}
