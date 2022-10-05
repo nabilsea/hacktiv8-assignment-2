@@ -12,6 +12,7 @@ type ItemRepository interface {
 	Save(item *model.Item) (*model.Item, error)
 	Update(item *model.Item) (*model.Item, error)
 	Delete(item *model.Item) (*model.Item, error)
+	DeleteByOrderId(orderID int) error
 }
 
 type itemRepository struct {
@@ -86,4 +87,13 @@ func (r *itemRepository) Delete(item *model.Item) (*model.Item, error) {
 	}
 
 	return item, nil
+}
+
+func (r *itemRepository) DeleteByOrderId(orderID int) error {
+	err := r.db.Where("order_id = ?", orderID).Delete(&model.Item{}).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
