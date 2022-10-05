@@ -30,7 +30,7 @@ func NewOrderRepository(c *ORConfig) OrderRepository {
 func (r *orderRepository) FindAll() ([]*model.Order, error) {
 	var orders []*model.Order
 
-	err := r.db.Find(&orders).Error
+	err := r.db.Preload("Items").Find(&orders).Error
 	if err != nil {
 		return orders, err
 	}
