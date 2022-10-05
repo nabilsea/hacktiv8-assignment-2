@@ -42,7 +42,7 @@ func (h *Handler) CreateOrder(c *gin.Context) {
 		return
 	}
 
-	code := http.StatusOK
+	code := http.StatusCreated
 	formattedOrder := dto.FormatOrder(order)
 	response := util.APIResponse(code, http.StatusText(code), nil, formattedOrder)
 	c.JSON(code, response)
@@ -53,5 +53,25 @@ func (h *Handler) UpdateOrder(c *gin.Context) {
 }
 
 func (h *Handler) DeleteOrder(c *gin.Context) {
+	params := &dto.OrderParams{}
+	err := c.ShouldBindUri(params)
+	if err != nil {
+		code := http.StatusNotFound
+		response := util.APIResponse(code, http.StatusText(code), err.Error(), nil)
+		c.JSON(code, response)
+		return
+	}
 
+	order, err := h.orderService.DeleteOrder(params)
+	if err != nil {
+		code := http.StatusBadRequest
+		response := util.APIResponse(code, http.StatusText(code), err.Error(), nil)
+		c.JSON(code, response)
+		return
+	}
+
+	code := http.StatusOK
+	formattedOrder := dto.FormatOrder(order)
+	response := util.APIResponse(code, http.StatusText(code), nil, formattedOrder)
+	c.JSON(code, response)
 }
