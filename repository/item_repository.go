@@ -43,7 +43,7 @@ func (r *itemRepository) FindAll() ([]*model.Item, error) {
 func (r *itemRepository) FindById(id int) (*model.Item, error) {
 	var item *model.Item
 
-	err := r.db.Where("id = ?", id).Find(&item).Error
+	err := r.db.Where("item_id = ?", id).Find(&item).Error
 	if err != nil {
 		return item, err
 	}

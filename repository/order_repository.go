@@ -41,7 +41,7 @@ func (r *orderRepository) FindAll() ([]*model.Order, error) {
 func (r *orderRepository) FindById(id int) (*model.Order, error) {
 	var order *model.Order
 
-	err := r.db.Where("order_id = ?", id).Find(&order).Error
+	err := r.db.Where("order_id = ?", id).Preload("Items").Find(&order).Error
 	if err != nil {
 		return order, err
 	}
