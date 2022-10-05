@@ -28,3 +28,12 @@ func FormatOrder(order *model.Order) OrderResponse {
 		Items:        FormatItems(order.Items),
 	}
 }
+
+func FormatOrders(orders []*model.Order) []OrderResponse {
+	formattedOrders := []OrderResponse{}
+	for _, order := range orders {
+		formattedOrder := FormatOrder(order)
+		formattedOrders = append(formattedOrders, formattedOrder)
+	}
+	return formattedOrders
+}
