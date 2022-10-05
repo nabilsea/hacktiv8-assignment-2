@@ -9,7 +9,18 @@ import (
 )
 
 func (h *Handler) GetOrders(c *gin.Context) {
+	orders, err := h.orderService.GetOrders()
+	if err != nil {
+		code := http.StatusBadRequest
+		response := util.APIResponse(code, http.StatusText(code), err.Error(), nil)
+		c.JSON(code, response)
+		return
+	}
 
+	code := http.StatusOK
+	formattedOrder := dto.FormatOrders(orders)
+	response := util.APIResponse(code, http.StatusText(code), nil, formattedOrder)
+	c.JSON(code, response)
 }
 
 func (h *Handler) CreateOrder(c *gin.Context) {
