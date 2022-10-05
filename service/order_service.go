@@ -35,7 +35,12 @@ func NewOrderService(c *OSConfig) OrderService {
 }
 
 func (s *orderService) GetOrders() ([]*model.Order, error) {
-	return nil, nil
+	orders, err := s.orderRepository.FindAll()
+	if err != nil {
+		return orders, err
+	}
+
+	return orders, nil
 }
 
 func (s *orderService) GetOrderById() (*model.Order, error) {
