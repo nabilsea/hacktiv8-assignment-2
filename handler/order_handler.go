@@ -49,7 +49,37 @@ func (h *Handler) CreateOrder(c *gin.Context) {
 }
 
 func (h *Handler) UpdateOrder(c *gin.Context) {
+	params := &dto.OrderParams{}
+	err := c.ShouldBindUri(params)
+	if err != nil {
+		code := http.StatusNotFound
+		response := util.APIResponse(code, http.StatusText(code), err.Error(), nil)
+		c.JSON(code, response)
+		return
+	}
 
+	input := &dto.UpdateOrderRequest{}
+	err = c.ShouldBindJSON(input)
+	if err != nil {
+		errors := util.FormatValidationError(err)
+		code := http.StatusUnprocessableEntity
+		response := util.APIResponse(code, http.StatusText(code), errors, nil)
+		c.JSON(code, response)
+		return
+	}
+
+	order, err := h.orderService.UpdateOrder(params, input)
+	if err != nil {
+		code := http.StatusBadRequest
+		response := util.APIResponse(code, http.StatusText(code), err.Error(), nil)
+		c.JSON(code, response)
+		return
+	}
+
+	code := http.StatusCreated
+	formattedOrder := dto.FormatOrder(order)
+	response := util.APIResponse(code, http.StatusText(code), nil, formattedOrder)
+	c.JSON(code, response)
 }
 
 func (h *Handler) DeleteOrder(c *gin.Context) {
