@@ -20,6 +20,10 @@ type OrderResponse struct {
 	Items        []ItemResponse `json:"items"`
 }
 
+type OrderParams struct {
+	OrderID uint `uri:"orderId" binding:"required"`
+}
+
 func FormatOrder(order *model.Order) OrderResponse {
 	return OrderResponse{
 		OrderID:      order.OrderID,
