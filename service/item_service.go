@@ -10,6 +10,7 @@ import (
 type ItemService interface {
 	CreateItem(input *dto.CreateItemRequest) (*model.Item, error)
 	UpdateItem() (*model.Item, error)
+	DeleteItemByOrderId(orderID uint) error
 }
 
 type itemService struct {
@@ -50,4 +51,14 @@ func (s *itemService) CreateItem(input *dto.CreateItemRequest) (*model.Item, err
 
 func (s *itemService) UpdateItem() (*model.Item, error) {
 	return nil, nil
+}
+
+func (s *itemService) DeleteItemByOrderId(orderID uint) error {
+	err := s.itemRepository.DeleteByOrderId(int(orderID))
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

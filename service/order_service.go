@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/nabilsea/hacktiv8-assignment-2.git/dto"
+	"github.com/nabilsea/hacktiv8-assignment-2.git/helper/custom_error"
 	"github.com/nabilsea/hacktiv8-assignment-2.git/model"
 	r "github.com/nabilsea/hacktiv8-assignment-2.git/repository"
 )
@@ -14,7 +15,7 @@ type OrderService interface {
 	GetOrderById() (*model.Order, error)
 	CreateOrder(input *dto.CreateOrderRequest) (*model.Order, error)
 	UpdateOrder() (*model.Order, error)
-	DeleteOrder() (*model.Order, error)
+	DeleteOrder(params *dto.OrderParams) (*model.Order, error)
 }
 
 type orderService struct {
@@ -80,6 +81,24 @@ func (s *orderService) UpdateOrder() (*model.Order, error) {
 	return nil, nil
 }
 
-func (s *orderService) DeleteOrder() (*model.Order, error) {
-	return nil, nil
+func (s *orderService) DeleteOrder(params *dto.OrderParams) (*model.Order, error) {
+	order, err := s.orderRepository.FindById(int(params.OrderID))
+	if err != nil {
+		return order, err
+	}
+	if order.OrderID == 0 {
+		return order, &custom_error.OrderNotFound{}
+	}
+
+	err = s.itemService.DeleteItemByOrderId(order.OrderID)
+	if err != nil {
+		return order, err
+	}
+
+	order, err = s.orderRepository.Delete(order)
+	if err != nil {
+		return order, err
+	}
+
+	return order, nil
 }
