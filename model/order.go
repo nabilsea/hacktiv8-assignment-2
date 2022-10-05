@@ -6,7 +6,7 @@ type Order struct {
 	OrderID      uint   `gorm:"primaryKey"`
 	CustomerName string `gorm:"type:varchar(50);"`
 	OrderedAt    time.Time
-	Item         []Item
+	Items        []Item
 }
 
 func (Order) TableName() string {
