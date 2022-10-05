@@ -16,7 +16,10 @@ func main() {
 	db := config.GetConn()
 
 	orderRepository := repository.NewOrderRepository(&repository.ORConfig{DB: db})
-	orderService := service.NewOrderService(&service.OSConfig{OrderRepository: orderRepository})
+	itemRepository := repository.NewItemRepository(&repository.IRConfig{DB: db})
+
+	itemService := service.NewItemService(&service.ISConfig{ItemRepository: itemRepository})
+	orderService := service.NewOrderService(&service.OSConfig{OrderRepository: orderRepository, ItemService: itemService})
 	h := handler.NewHandler(&handler.HandlerConfig{
 		OrderService: orderService,
 	})
