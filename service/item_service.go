@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/nabilsea/hacktiv8-assignment-2.git/dto"
 	"github.com/nabilsea/hacktiv8-assignment-2.git/helper/custom_error"
 	"github.com/nabilsea/hacktiv8-assignment-2.git/model"
@@ -9,7 +11,7 @@ import (
 
 type ItemService interface {
 	CreateItem(input *dto.CreateItemRequest) (*model.Item, error)
-	UpdateItem() (*model.Item, error)
+	UpdateItem(input *dto.UpdateItemRequest) (*model.Item, error)
 	DeleteItemByOrderId(orderID uint) error
 }
 
@@ -49,8 +51,27 @@ func (s *itemService) CreateItem(input *dto.CreateItemRequest) (*model.Item, err
 	return item, nil
 }
 
-func (s *itemService) UpdateItem() (*model.Item, error) {
-	return nil, nil
+func (s *itemService) UpdateItem(input *dto.UpdateItemRequest) (*model.Item, error) {
+	item, err := s.itemRepository.FindById(int(input.LineItemID))
+	if err != nil {
+		return item, err
+	}
+	if item.ItemID == 0 {
+		return item, errors.New("item does not exists")
+	}
+
+	item.ItemCode = input.ItemCode
+	item.Description = input.Description
+	item.Quantity = input.Quantity
+	item.OrderID = input.OrderID
+
+	item, err = s.itemRepository.Update(item)
+	if err != nil {
+		return item, err
+	}
+
+	return item, nil
+
 }
 
 func (s *itemService) DeleteItemByOrderId(orderID uint) error {
