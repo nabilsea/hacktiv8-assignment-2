@@ -8,6 +8,7 @@ import (
 type ItemRepository interface {
 	FindAll() ([]*model.Item, error)
 	FindById(id int) (*model.Item, error)
+	FindByCode(code string) (*model.Item, error)
 	Save(item *model.Item) (*model.Item, error)
 	Update(item *model.Item) (*model.Item, error)
 	Delete(item *model.Item) (*model.Item, error)
@@ -42,6 +43,17 @@ func (r *itemRepository) FindById(id int) (*model.Item, error) {
 	var item *model.Item
 
 	err := r.db.Where("id = ?", id).Find(&item).Error
+	if err != nil {
+		return item, err
+	}
+
+	return item, nil
+}
+
+func (r *itemRepository) FindByCode(code string) (*model.Item, error) {
+	var item *model.Item
+
+	err := r.db.Where("item_code = ?", code).Find(&item).Error
 	if err != nil {
 		return item, err
 	}
